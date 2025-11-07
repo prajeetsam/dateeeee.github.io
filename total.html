@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Date Night Under the Stars — Jeet & nushh</title>
+  <style>
+    :root{
+      --bg-1: #070719; /* deep navy */
+      --bg-2: #0f1028; /* deep indigo */
+      --card: rgba(255,255,255,0.03);
+      --muted: #99a0b3;
+      --accent: #ff7ab6; /* pink */
+      --accent-2: #8b6bff; /* violet */
+      --glass: rgba(255,255,255,0.04);
+      --success: #34d399;
+      --shadow: 0 10px 30px rgba(3,6,23,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;min-height:100%;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(139,107,255,0.08), transparent), radial-gradient(900px 400px at 90% 90%, rgba(255,122,182,0.06), transparent), linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; padding:28px; display:flex;align-items:center;justify-content:center;
+    }
+
+    .wrap{width:100%;max-width:1120px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:16px;padding:18px;box-shadow:var(--shadow);backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.03)}
+
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    h1{margin:0;font-size:26px;letter-spacing:-0.02em}
+    .sub{color:var(--muted);font-size:13px}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
+    @media(min-width:980px){.grid{grid-template-columns:340px 1fr 320px}}
+
+    /* Left column */
+    .panel{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.02)}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type=text],select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;font-size:14px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:0;cursor:pointer}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 6px 18px rgba(139,107,255,0.12);border:1px solid rgba(255,255,255,0.04)}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit}
+    .small{font-size:13px}
+    .coffee-preview{display:flex;align-items:center;gap:10px;margin-top:12px}
+
+    /* middle */
+    .card-mid{padding:14px;border-radius:12px}
+    .poll-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
+    .poll-btn{padding:12px;border-radius:10px;border:1px dashed rgba(255,255,255,0.04);text-align:left;cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+    .poll-btn.voted{opacity:0.6}
+    .wheel{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .wheel-display{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);text-align:center;font-weight:700;background:rgba(255,255,255,0.01)}
+
+    /* right */
+    .card-right{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.02)}
+    .timer{font-family: 'Courier New',monospace;font-size:34px;text-align:center}
+    .controls{display:flex;gap:8px;margin-top:10px}
+
+    /* progress */
+    .progress-wrap{margin-top:14px}
+    .progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
+
+    /* join button area */
+    .join-area{display:flex;flex-direction:column;align-items:center;gap:8px}
+    .join-btn{padding:12px 18px;border-radius:14px;font-weight:700;border:0;cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 10px 30px rgba(139,107,255,0.14);transition:transform 160ms ease, box-shadow 160ms}
+    .join-btn:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(139,107,255,0.18)}
+    .join-btn:active{transform:translateY(-1px)}
+
+    /* starfield overlay */
+    .star-overlay{position:fixed;left:0;top:0;width:100%;height:100%;background:linear-gradient(180deg, rgba(3,6,23,0.92), rgba(6,8,20,0.94));display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;pointer-events:none;transition:opacity 420ms ease}
+    .star-overlay.show{opacity:1;pointer-events:auto}
+    .stars{position:absolute;inset:0;overflow:hidden}
+    .star{position:absolute;background:radial-gradient(circle, #fff 0%, rgba(255,255,255,0.1) 40%, transparent 60%);width:2px;height:2px;border-radius:50%;opacity:0.9}
+    .twinkle{animation:twinkle 3.6s ease-in-out infinite}
+    @keyframes twinkle{0%,100%{opacity:0.15;transform:scale(0.9)}50%{opacity:1;transform:scale(1.2)}}
+
+    .popup{position:relative;z-index:2;padding:28px 32px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);text-align:center;backdrop-filter:blur(6px)}
+    .popup h2{margin:0;font-size:22px}
+    .popup p{color:var(--muted);margin-top:8px}
+
+    /* small helpers */
+    .muted{color:var(--muted);font-size:13px}
+    .between{display:flex;align-items:center;justify-content:space-between}
+    .copy-msg{width:100%;padding:10px;border-radius:10px;border:1px dashed rgba(255,255,255,0.03);margin-top:8px;background:transparent;color:inherit}
+
+    /* responsive adjustments */
+    @media(max-width:480px){
+      h1{font-size:20px}
+      .timer{font-size:28px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div>
+          <h1>Date Night Under the Stars — Jeet & nushh</h1>
+          <div class="sub">Sunday — <strong>Nov 9, 2025</strong> • 3:00 PM — 6:00 PM (IST)</div>
+        </div>
+
+        <div style="text-align:right">
+          <div class="sub">Countdown</div>
+          <div id="countdown" style="font-family:monospace;font-weight:700">--:--:--</div>
+          <div class="muted small">Join button below</div>
+        </div>
+      </header>
+
+      <div style="margin-top:14px" class="join-area">
+        <button id="joinBtn" class="join-btn">Join Our Date 💞</button>
+        <div class="muted small">Click to enter the starry moment, then you’ll be redirected to Google Meet</div>
+      </div>
+
+      <div class="grid">
+        <!-- left: RSVP + Coffee -->
+        <section class="panel">
+          <h3 style="margin:0 0 8px 0">RSVP & Coffee</h3>
+          <p class="muted small">Say your name, RSVP and pick a drink — I’ll prepare a matching playlist.</p>
+
+          <label for="name">Your name</label>
+          <input id="name" type="text" placeholder="Type your name..." value="Jeet">
+
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <button id="yesBtn" class="btn btn-primary small" title="I'll be there">Yes, I'll be there</button>
+            <button id="noBtn" class="btn btn-ghost small">Can't make it</button>
+          </div>
+
+          <div id="rsvpMsg" class="muted" style="margin-top:10px"></div>
+
+          <label style="margin-top:12px">Choose your coffee</label>
+          <select id="coffee">
+            <option>Cappuccino</option>
+            <option>Latte</option>
+            <option>Flat White</option>
+            <option>Espresso</option>
+            <option>Matcha Latte</option>
+            <option>Iced Coffee</option>
+          </select>
+
+          <div class="coffee-preview">
+            <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-size:26px">☕</div>
+            <div>
+              <div class="small">Selected</div>
+              <div id="coffeeLabel" style="font-weight:700">Cappuccino</div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- middle: trends poll + wheel -->
+        <section class="card-mid">
+          <h3 style="margin:0 0 6px 0">Instagram Trends — Vote & Play</h3>
+          <p class="muted small">Pick a trend we'll try during our recreation time.</p>
+
+          <div class="poll-grid" id="pollArea"></div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 6px 0">Spin the Wheel (recreation picker)</h4>
+            <div class="wheel">
+              <div class="wheel-display" id="wheelDisplay">Press spin to pick</div>
+              <button id="spinBtn" class="btn btn-primary small">Spin</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 6px 0">Share message</h4>
+            <textarea id="shareText" class="copy-msg" rows="2">Join me Nov 9, 2025 3PM IST — we'll do coffee, try an Insta trend, then study together! RSVP: Jeet</textarea>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="copyShare" class="btn btn-primary small">Copy message</button>
+              <button id="copyLink" class="btn btn-ghost small">Copy meeting placeholder</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- right: study timer + progress -->
+        <section class="card-right">
+          <h3 style="margin:0 0 6px 0">Study Session</h3>
+          <p class="muted small">Pomodoro-style study timer — 25 min focus / 5 min break.</p>
+
+          <div style="margin-top:8px;text-align:center">
+            <div class="timer" id="studyTimer">25:00</div>
+            <div class="controls">
+              <button id="startStudy" class="btn btn-primary small">Start</button>
+              <button id="pauseStudy" class="btn btn-ghost small">Pause</button>
+              <button id="resetStudy" class="btn btn-ghost small">Reset</button>
+            </div>
+            <div class="muted small" style="margin-top:6px" id="studyState">Focus time</div>
+          </div>
+
+          <div class="progress-wrap">
+            <h4 style="margin:8px 0 6px 0">Event progress</h4>
+            <div class="progress"><i id="progBar"></i></div>
+            <div class="muted small" style="margin-top:6px" id="progText">0% through the scheduled time</div>
+          </div>
+        </section>
+      </div>
+
+      <footer style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="copyEvent" class="btn btn-primary small">Copy Event Message</button>
+          <button id="hostTips" class="btn btn-ghost small">Quick Host Tips</button>
+        </div>
+        <div class="muted small">Made with ♥ — Jeet for nushh • edit the file to customize text & links</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- star overlay (hidden by default) -->
+  <div id="starOverlay" class="star-overlay" aria-hidden="true">
+    <div class="stars" id="stars"></div>
+    <div class="popup" role="dialog" aria-modal="true">
+      <h2>See you soon, my love 💕✨</h2>
+      <p class="muted">We'll hop into our cozy room in a moment...</p>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const meetLink = 'https://meet.google.com/nuq-wtjb-hvj';
+    // Event times (IST Nov 9, 2025 15:00 - 18:00)
+    const eventStart = new Date('2025-11-09T09:30:00Z');
+    const eventEnd = new Date('2025-11-09T12:30:00Z');
+
+    // ---------- Stars generation (subtle twinkle) ----------
+    const starsRoot = document.getElementById('stars');
+    function makeStars(count=120){
+      const w = window.innerWidth, h = window.innerHeight;
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className = 'star twinkle';
+        const left = Math.random()*100; const top = Math.random()*100;
+        const size = 0.6 + Math.random()*2.4; // subtle sizes
+        s.style.left = left + '%'; s.style.top = top + '%';
+        s.style.width = (size) + 'px'; s.style.height = (size) + 'px';
+        s.style.opacity = 0.15 + Math.random()*0.85;
+        s.style.animationDelay = (Math.random()*3) + 's';
+        s.style.animationDuration = 2 + Math.random()*4 + 's';
+        starsRoot.appendChild(s);
+      }
+    }
+    makeStars(120);
+
+    // ---------- Countdown ----------
+    const cdEl = document.getElementById('countdown');
+    function updateCountdown(){
+      const now = new Date();
+      let diff = Math.max(0, eventStart - now);
+      const d = Math.floor(diff / (1000*60*60*24));
+      diff -= d * (1000*60*60*24);
+      const h = Math.floor(diff / (1000*60*60));
+      diff -= h * (1000*60*60);
+      const m = Math.floor(diff / (1000*60));
+      const s = Math.floor((diff / 1000) % 60);
+      cdEl.textContent = `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+    }
+    updateCountdown(); setInterval(updateCountdown,1000);
+
+    // ---------- RSVP ----------
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const nameInput = document.getElementById('name');
+    const rsvpMsg = document.getElementById('rsvpMsg');
+    const coffeeSelect = document.getElementById('coffee');
+    const coffeeLabel = document.getElementById('coffeeLabel');
+
+    yesBtn.addEventListener('click', ()=>{
+      const who = nameInput.value.trim() || 'Love';
+      rsvpMsg.textContent = `Amazing, ${who}! I’ll have a ${coffeeSelect.value} ready — see you at 3 PM.`;
+      rsvpMsg.style.color = 'var(--accent)';
+      showTemporaryToast('See you soon! 💖');
+    });
+    noBtn.addEventListener('click', ()=>{
+      rsvpMsg.textContent = `Oh no — I’ll miss you. We can reschedule 💛`;
+      rsvpMsg.style.color = 'var(--muted)';
+    });
+    coffeeSelect.addEventListener('change', ()=>{ coffeeLabel.textContent = coffeeSelect.value; saveState(); });
+
+    // ---------- Poll ----------
+    const pollArea = document.getElementById('pollArea');
+    const trends = [
+      {id:1,title:'Aesthetic Room Tour',votes:0},
+      {id:2,title:'Mini Dance Trend',votes:0},
+      {id:3,title:'3-Style Outfit Switch',votes:0},
+      {id:4,title:'Quick Meme Recreate',votes:0},
+    ];
+    let hasVoted = false;
+    function renderPoll(){
+      pollArea.innerHTML='';
+      trends.forEach(t=>{
+        const b = document.createElement('button');
+        b.className='poll-btn'; if(hasVoted) b.classList.add('voted');
+        b.innerHTML = `<div style="font-weight:700">${t.title}</div><div class="muted small">Votes: <span data-id="${t.id}">${t.votes}</span></div>`;
+        b.addEventListener('click', ()=>{ if(hasVoted) return; t.votes++; hasVoted=true; saveState(); renderPoll(); });
+        pollArea.appendChild(b);
+      });
+    }
+    renderPoll();
+
+    // ---------- Wheel ----------
+    const wheelOptions = ['Sing 10s','Do the trending move','Share a childhood photo','Do a funny voice-over','Compliment challenge'];
+    const wheelDisplay = document.getElementById('wheelDisplay');
+    const spinBtn = document.getElementById('spinBtn');
+    let spinning = false;
+    spinBtn.addEventListener('click', ()=>{
+      if(spinning) return; spinning = true; wheelDisplay.textContent='Spinning...';
+      let rounds = 20 + Math.floor(Math.random()*30); let i=0;
+      const iv = setInterval(()=>{ wheelDisplay.textContent = wheelOptions[i % wheelOptions.length]; i++; if(i>rounds){ clearInterval(iv); spinning=false; showTemporaryToast('Picked: ' + wheelDisplay.textContent); } },80);
+    });
+
+    // ---------- Share / copy ----------
+    const copyShare = document.getElementById('copyShare');
+    const copyLink = document.getElementById('copyLink');
+    const shareText = document.getElementById('shareText');
+    const copyEvent = document.getElementById('copyEvent');
+
+    copyShare.addEventListener('click', ()=>{ navigator.clipboard?.writeText(shareText.value).then(()=>{ showTemporaryToast('Copied message to clipboard!') }); });
+    copyLink.addEventListener('click', ()=>{ navigator.clipboard?.writeText('Video room link: ' + meetLink).then(()=>{ showTemporaryToast('Copied meeting link!') }); });
+    copyEvent.addEventListener('click', ()=>{ const who = nameInput.value.trim() || '(your name)'; const msg = `Nov 9, 2025 15:00 IST — Online Date (3-6pm). Join via: ${meetLink} — RSVP: ${who}`; navigator.clipboard?.writeText(msg).then(()=>{ showTemporaryToast('Event message copied!') }); });
+
+    function showTemporaryToast(text){
+      const el = document.createElement('div'); el.textContent = text; el.style.position='fixed'; el.style.right='20px'; el.style.bottom='20px'; el.style.padding='10px 14px'; el.style.background='rgba(0,0,0,0.7)'; el.style.color='white'; el.style.borderRadius='8px'; el.style.zIndex=10010; document.body.appendChild(el);
+      setTimeout(()=>el.style.opacity='0',1600); setTimeout(()=>el.remove(),2100);
+    }
+
+    // ---------- Study timer ----------
+    const studyTimer = document.getElementById('studyTimer');
+    const startStudy = document.getElementById('startStudy');
+    const pauseStudy = document.getElementById('pauseStudy');
+    const resetStudy = document.getElementById('resetStudy');
+    const studyState = document.getElementById('studyState');
+
+    let studySeconds = 25*60; let studyRunning=false; let isBreak=false; let studyIv=null;
+    function formatMMSS(sec){ const m=Math.floor(sec/60); const s=sec%60; return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` }
+    function renderStudy(){ studyTimer.textContent = formatMMSS(studySeconds); studyState.textContent = isBreak ? 'Break time' : 'Focus time'; }
+    renderStudy();
+    function stepStudy(){ if(studySeconds<=0){ isBreak = !isBreak; studyRunning=false; clearInterval(studyIv); studySeconds = isBreak ? 5*60 : 25*60; renderStudy(); showTemporaryToast(isBreak? 'Break started!' : 'Focus session started!'); return; } studySeconds--; renderStudy(); }
+    startStudy.addEventListener('click', ()=>{ if(studyRunning) return; studyRunning=true; studyIv=setInterval(stepStudy,1000); });
+    pauseStudy.addEventListener('click', ()=>{ studyRunning=false; clearInterval(studyIv); });
+    resetStudy.addEventListener('click', ()=>{ studyRunning=false; clearInterval(studyIv); isBreak=false; studySeconds=25*60; renderStudy(); });
+
+    // ---------- Event progress bar ----------
+    const progBar = document.getElementById('progBar');
+    const progText = document.getElementById('progText');
+    function updateProg(){ const now = new Date(); const total = eventEnd - eventStart; const passed = now - eventStart; let p = Math.round(Math.max(0,Math.min(1,passed/total))*100); progBar.style.width = p + '%'; progText.textContent = p + '% through the scheduled time'; }
+    updateProg(); setInterval(updateProg,15000);
+
+    // ---------- Local storage state ----------
+    function saveState(){ try{ localStorage.setItem('invite-state', JSON.stringify({name:nameInput.value,coffee:coffeeSelect.value,voted:hasVoted,trends: trends.map(t=>t.votes)})); }catch(e){} }
+    function loadState(){ try{ const s = JSON.parse(localStorage.getItem('invite-state')||'{}'); if(s.name) nameInput.value = s.name; if(s.coffee) coffeeSelect.value = s.coffee; if(s.voted) hasVoted = s.voted; if(s.trends) { s.trends.forEach((v,i)=>{ if(trends[i]) trends[i].votes = v }); } }catch(e){} }
+    nameInput.addEventListener('input', saveState);
+    loadState(); renderPoll();
+
+    // ---------- Star overlay + Join behavior (centered popup, 3s, then open Meet) ----------
+    const starOverlay = document.getElementById('starOverlay');
+    const joinBtn = document.getElementById('joinBtn');
+    let overlayTimer = null;
+
+    joinBtn.addEventListener('click', ()=>{
+      // show overlay
+      starOverlay.classList.add('show');
+      // generate small burst of extra stars for the moment
+      burstSmallStars(18);
+      // after 3 seconds, open the meet link in a new tab
+      overlayTimer = setTimeout(()=>{
+        starOverlay.classList.remove('show');
+        window.open(meetLink, '_blank');
+      }, 3000);
+    });
+
+    // clicking overlay cancels and close
+    starOverlay.addEventListener('click', (e)=>{ if(e.target===starOverlay){ starOverlay.classList.remove('show'); clearTimeout(overlayTimer); } });
+
+    function burstSmallStars(n=12){
+      for(let i=0;i<n;i++){
+        const s = document.createElement('div'); s.className='star twinkle';
+        const left = 40 + (Math.random()-0.5)*40; const top = 40 + (Math.random()-0.5)*40; const size = 1 + Math.random()*3;
+        s.style.left = left + '%'; s.style.top = top + '%'; s.style.width = size + 'px'; s.style.height = size + 'px'; s.style.opacity = 0.9; s.style.animationDuration = (1 + Math.random()*1.6) + 's';
+        starsRoot.appendChild(s);
+        setTimeout(()=>{ s.remove(); }, 2200);
+      }
+    }
+
+    // ---------- Accessibility / small extras ----------
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape'){ starOverlay.classList.remove('show'); clearTimeout(overlayTimer); } });
+
+    // ensure stars resize / regenerate minimal on resize
+    window.addEventListener('resize', ()=>{ /* keep subtle, do nothing heavy */ });
+
+    // end of script
+  </script>
+</body>
+</html>
